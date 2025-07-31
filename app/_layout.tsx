@@ -47,6 +47,8 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+ /*  console.log('Current color scheme:', colorScheme);
+  console.log('Current theme:', DefaultTheme); */
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
