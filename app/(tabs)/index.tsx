@@ -1,11 +1,14 @@
-import { StyleSheet, StatusBar } from 'react-native';
+import { StyleSheet, StatusBar, SafeAreaView, ScrollView } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 
+
 export default function TabOneScreen() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <View>
       {/* Set status bar style * 
       <StatusBar barStyle="dark-content" /> 
 
@@ -30,7 +33,25 @@ export default function TabOneScreen() {
         <Text style={styles.blockTitle}>Revenue 💰</Text>
         <Text style={styles.blockValue}>$45,600</Text>
       </View>
+      <View style={[styles.largeBlock, { backgroundColor: '#b6df3cff' }]}>
+        <Text style={styles.blockTitle}>Revenue 💰</Text>
+        <Text style={styles.blockValue}>$45,600</Text>
+      </View>
+      {/* Another row with two blocks */}
+       <View style={styles.row}>
+        <View style={[styles.block, { backgroundColor: '#8e44ad' }]}>
+          <Text style={styles.blockTitle}>Items </Text>
+          <Text style={styles.blockValue}>50</Text>
+        </View>
+        <View style={[styles.block, { backgroundColor: '#2980b9' }]}>
+          <Text style={styles.blockTitle}>Days</Text>
+          <Text style={styles.blockValue}>980</Text>
+        </View>
+      </View>
+
     </View>
+     </ScrollView>   
+    </SafeAreaView>
   );
 }
 
@@ -45,6 +66,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between', // Distribute blocks evenly
     marginBottom: 16,
+  },
+   scrollContainer: {
+    paddingVertical: 20,
+    paddingHorizontal: 16,
   },
   block: {
     width: '48%', // Each block takes up slightly less than half the width
