@@ -2,9 +2,13 @@ import { Alert, SafeAreaView, ScrollView, StyleSheet, TextInput, Image, Touchabl
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
-import { useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from '@/components/useColorScheme';
+import { useStorage } from '@/utils/useStorage';
+import { router, useRouter } from 'expo-router';
+import { ActivityIndicator } from 'react-native';
+
 
 
   // --- Mock Data: In a real app, this data would come from your authentication state ---
@@ -21,14 +25,52 @@ const CURRENT_USER_DATA = {
 export default function TabThreeScreen() {
 
 
-
+  const [loadingI, setLoadingI] = useState(true);
   const [name, setName] = useState(CURRENT_USER_DATA.name);
   const [email, setEmail] = useState(CURRENT_USER_DATA.email);
   const [notificationsEnabled, setNotificationsEnabled] = useState(
     CURRENT_USER_DATA.settings.notificationsEnabled
   );
   const colorScheme = useColorScheme();
+  //cont { value: user, remove } = useStorage<string | null>('user', null);
+  const { value: token, save, remove, loading } = useStorage<string | null>('authToken', null);
+  const { value: userName, save: saveU } = useStorage<string | null>('user', null);
+  const { value: isLoggedIn, save: saveLoginStatus, remove: removeLog } = useStorage<boolean | null>('isLoggedIn', false);
+  
+  
+/*   useEffect(() => {
 
+    const checkUserData = async () => { 
+      if (loadingI) {
+        console.log('Loading user data...');
+        return;
+      }
+      // Simulate fetching user data from an API or storage
+      await isLoggedIn ? saveU(userName) : saveU('Guest');
+      console.log('User data loaded:', userName);
+      if (isLoggedIn) setName(userName || 'Guest');
+      setLoadingI(false); 
+      
+      
+    }
+    console.log('TabThreeScreen mounted');
+    console.log('Current user:', userName, isLoggedIn);
+    
+    return () => {
+      console.log('TabThreeScreen unmounted');
+    };
+
+  }, []); */
+
+  if (loadingI) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="#f47521" />
+      </SafeAreaView>
+    );
+  } 
+  
+  
   const handleSaveChanges = () => {
     // In a real app, you would send this data to your backend API
     console.log('Saving data:', { name, email, notificationsEnabled });
@@ -45,10 +87,20 @@ export default function TabThreeScreen() {
           "Are you sure you want to log out?",
           [
               { text: "Cancel", style: "cancel" },
-              { text: "OK", onPress: () => console.log("User logged out!") }
+              { text: "OK", onPress: () => logOut() } // Navigate to the login screen
           ]
       )
   }
+
+  const logOut = () => {
+    saveU(null);
+    saveLoginStatus(false);
+    remove();
+    router.push('../screen/auth/auth'); // Navigate to the login screen
+  };
+
+  
+
 
   return (
    <SafeAreaView style={styles.container}>
@@ -101,6 +153,48 @@ export default function TabThreeScreen() {
               value={notificationsEnabled}
             />
           </View>
+        </View>
+         <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colorScheme === 'dark' ? '#ffffff' : '#000000' }]}>Values</Text>
+          <View style={styles.fieldContainer}>
+            <Ionicons name="person-outline" style={styles.fieldIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Full Name"
+              placeholderTextColor="#888"
+              value={name}
+              editable={false}
+              
+            />
+
+            
+          </View>
+          <Text>Token actual: {token ?? 'No hay token'}</Text>
+          <Text>User actual: {userName ?? 'No hay user'}</Text>
+          <Text>IsLogged actual: { isLoggedIn ? 'true' : 'No esta logeado'}</Text>
+          <TouchableOpacity style={styles.saveButton} onPress={() => save('abc123')}>
+          <Text style={styles.saveButtonText}>Gurdar Token</Text>
+        </TouchableOpacity>
+          <TouchableOpacity style={styles.saveButton} onPress={() => console.log('Token:', token)}>
+          <Text style={styles.saveButtonText}>Ver Token</Text>
+        </TouchableOpacity>
+          <TouchableOpacity style={styles.saveButton} onPress={remove}> 
+          <Text style={styles.saveButtonText}>Eliminar Token</Text>
+
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.saveButton} onPress={() => saveU('Elvis')}>
+          <Text style={styles.saveButtonText}>Gurdar Usuario Elvis</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.saveButton} onPress={() => saveLoginStatus(true)}>
+          <Text style={styles.saveButtonText}>Gurdar Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.saveButton} onPress={() => console.log('User:', isLoggedIn)}>
+          <Text style={styles.saveButtonText}>Ver Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.saveButton} onPress={() => removeLog()}>
+          <Text style={styles.saveButtonText}>Eliminar Login</Text>
+        </TouchableOpacity>
+          {/* <Button title="Eliminar token" onPress={remove} /> */}
         </View>
 
         {/* --- Action Buttons --- */}

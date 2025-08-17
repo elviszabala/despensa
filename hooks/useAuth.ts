@@ -1,12 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import { useStorage } from '@/utils/useStorage';
-import { use, useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
 
 export function useAuth() {
   const { value: userName, save: saveUser } = useStorage<string | null>('user', null);
   const { value: isLoggedIn, save: saveLoginStatus } = useStorage<boolean>('isLoggedIn', false);
-   const [value, setValue] = useState('');
+  const [value, setValue] = useState('');
+  const [loading, setLoading] = useState(true);
 
 
 
@@ -14,6 +15,7 @@ export function useAuth() {
 
 
   useEffect(() => {
+    
     console.log('useAuth mounted', userName, isLoggedIn);
     const checkLoginStatus = async () => {
       const storedUser = await AsyncStorage.getItem('user');
@@ -22,10 +24,14 @@ export function useAuth() {
 
       if (storedUser) {
         saveUser(storedUser);
+        console.log('User found:', storedUser);
       }
       if (storedLoginStatus) {
+        console.log('Login status found:', storedLoginStatus);
         saveLoginStatus(JSON.parse(storedLoginStatus));
       }
+
+      setLoading(false);
     };
 
     checkLoginStatus();
@@ -52,6 +58,7 @@ export function useAuth() {
     isLoggedIn,
     login,
     logout,
+    loading,
     
   };
 }

@@ -2,17 +2,39 @@ import { StyleSheet, StatusBar, SafeAreaView, ScrollView } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
+import { useStorage } from '@/utils/useStorage';
+import { useEffect } from 'react';
 
 
 export default function TabOneScreen() {
+  const { value: userName, save: saveU } = useStorage<string | null>('user', null);
+
+
+  useEffect(() => {
+    console.log('TabOneScreen mounted');
+    
+    return () => {
+      console.log('TabOneScreen unmounted');
+    };
+  }, []); 
+
+
+
+
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
     <View>
       {/* Set status bar style * 
-      <StatusBar barStyle="dark-content" /> 
+      <StatusBar barStyle="dark-content" /> */}
 
-      {/* Top row with two blocks */}
+      <View style={[styles.largeBlock, { backgroundColor: '#1a241fff' }]}>
+        <Text style={styles.blockTitle}>Bienvenido 💰</Text>
+      <Text style={styles.blockValue}>{userName ?? 'Usuario'}</Text>
+      </View>
+
+     {/*  /* Top row with two blocks */ }
       <View style={styles.row}>
         <View style={[styles.block, { backgroundColor: '#8e44ad' }]}>
           <Text style={styles.blockTitle}>Items </Text>

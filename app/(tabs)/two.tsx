@@ -8,6 +8,7 @@ import data from '../../constants/data.json'
 
 export default function TabTwoScreen() {
   const router = useRouter();
+  
  const [items, setItems] = useState(data);
 
   const handleDelete = (item: { title: any; type?: string; description?: string; filename?: string; height?: number; width?: number; price?: number; rating?: number; }) => {
@@ -24,16 +25,16 @@ export default function TabTwoScreen() {
   };
 
   const handleEdit = (item: { title: any; type?: string; description?: string; filename?: string; height?: number; width?: number; price?: number; rating?: number; }) => {
-    router.push({ pathname: '/add', params: { item: JSON.stringify(item) } });
+    router.push({ pathname: '/items/edit', params: { item: JSON.stringify(item) } });
   };
 
   const renderHeader = () => (
     <View style={styles.header}>
       <View style={styles.row}>
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/add')}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/items/add')}>
           <Text style={styles.buttonText}>Add Item</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/add')}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/items/add')}>
           <Text style={styles.buttonText}>Add Item</Text>
         </TouchableOpacity>
       </View>

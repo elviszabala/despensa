@@ -5,17 +5,8 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import { useAuth } from '../hooks/useAuth'; 
+
 import { useColorScheme } from '@/components/useColorScheme';
-
-import  firtStart  from '@/services/firtStart'
-import LoginScreen from '../screen/auth/auth';
-import { useStorage } from '@/utils/useStorage';
-import { ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
-
-
-
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -24,18 +15,15 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(/tabs)',
+  initialRouteName: 'cosas',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const router = useRouter();
-  const { loading, userName,  isLoggedIn } = useAuth();
-
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require('../../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
 
@@ -54,27 +42,7 @@ export default function RootLayout() {
     return null;
   }
 
- 
-  //console.log('Cargo', user, isLoggedIn);
-
-  if (loading) {
-     return (
-       
-         <ActivityIndicator size="large" color="#f47521" />
-       
-     );
-   } 
-
-  if (!isLoggedIn) {
-    console.log('User is not logged in, redirecting to login screen');
-    return <LoginScreen />;
-  }
-
   return <RootLayoutNav />;
-
-  
-
-  
 }
 
 function RootLayoutNav() {
@@ -84,14 +52,23 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-
-     
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Version' }} />
-        <Stack.Screen name="items/add" options={{ title: "Add", headerBackTitle: "Back" }} />
-        <Stack.Screen name="items/edit" options={{ title: "Edit", headerBackTitle: "Back", presentation: 'modal' }} />
-        
+        <Stack.Screen name="add" options={{ headerShown: true, headerTitle: 'Custom' }} />
+        {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+         */}
+        {/*<Stack.Screen name="items/add" options={{ title: 'Add Item' }} />
+         <Stack.Screen name="items/edit" options={{ title: 'Edit Item' }} />
+        <Stack.Screen name="items/view" options={{ title: 'View Item' }} />
+        <Stack.Screen name="items/delete" options={{ title: 'Delete Item' }} />
+        <Stack.Screen name="items/list" options={{ title: 'Items List' }} />
+        <Stack.Screen name="items/search" options={{ title: 'Search Items' }} />
+        <Stack.Screen name="items/filter" options={{ title: 'Filter Items' }} />
+        <Stack.Screen name="items/sort" options={{ title: 'Sort Items' }} />
+        <Stack.Screen name="items/clear" options={{ title: 'Clear Items' }} />
+        <Stack.Screen name="items/export" options={{ title: 'Export Items' }} />
+        <Stack.Screen name="items/import" options={{ title: 'Import Items' }} />
+        <Stack.Screen name="items/settings" options={{ title: 'Settings' }} /> */}
       </Stack>
     </ThemeProvider>
   );
