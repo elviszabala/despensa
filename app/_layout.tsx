@@ -3,13 +3,13 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import { useAuth } from '../hooks/useAuth'; 
 import { useColorScheme } from '@/components/useColorScheme';
 
 import  firtStart  from '@/services/firtStart'
-import LoginScreen from '../screen/auth/auth';
+import LoginScreen from './auth/auth';
 import { useStorage } from '@/utils/useStorage';
 import { ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -33,6 +33,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const router = useRouter();
   const { loading, userName,  isLoggedIn } = useAuth();
+  const [loadingI, setLoadingI] = useState(true);
 
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -58,9 +59,11 @@ export default function RootLayout() {
   //console.log('Cargo', user, isLoggedIn);
 
   if (loading) {
+    console.log('Loading user data...', userName, isLoggedIn);
+
      return (
        
-         <ActivityIndicator size="large" color="#f47521" />
+         <ActivityIndicator size="large" color="#f47521"/>
        
      );
    } 
@@ -91,6 +94,7 @@ function RootLayoutNav() {
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Version' }} />
         <Stack.Screen name="items/add" options={{ title: "Add", headerBackTitle: "Back" }} />
         <Stack.Screen name="items/edit" options={{ title: "Edit", headerBackTitle: "Back", presentation: 'modal' }} />
+        <Stack.Screen name="auth/auth" options={{ title: "Log in"}} />
         
       </Stack>
     </ThemeProvider>

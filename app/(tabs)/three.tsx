@@ -8,6 +8,8 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { useStorage } from '@/utils/useStorage';
 import { router, useRouter } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
+import  {onlyGet}  from '../../api/apiCalls'; // Adjust the import path as necessary
+import { useApi } from "../../api/useApi";
 
 
 
@@ -16,7 +18,7 @@ const CURRENT_USER_DATA = {
   id: '3',
   name: 'Bulma',
   email: 'bulma.briefs@capsulecorp.com',
-  avatar: 'https://placehold.co/150x150/FF69B4/FFFFFF/png?text=B',
+  avatar: 'https://placehold.jp/150x150/FF69B4/FFFFFF/png?text=B',
   settings: {
     notificationsEnabled: true,
   },
@@ -25,7 +27,7 @@ const CURRENT_USER_DATA = {
 export default function TabThreeScreen() {
 
 
-  const [loadingI, setLoadingI] = useState(true);
+
   const [name, setName] = useState(CURRENT_USER_DATA.name);
   const [email, setEmail] = useState(CURRENT_USER_DATA.email);
   const [notificationsEnabled, setNotificationsEnabled] = useState(
@@ -34,42 +36,61 @@ export default function TabThreeScreen() {
   const colorScheme = useColorScheme();
   //cont { value: user, remove } = useStorage<string | null>('user', null);
   const { value: token, save, remove, loading } = useStorage<string | null>('authToken', null);
-  const { value: userName, save: saveU } = useStorage<string | null>('user', null);
+  const { value: userName, save: saveU, remove: removeU } = useStorage<string | null>('user', null);
   const { value: isLoggedIn, save: saveLoginStatus, remove: removeLog } = useStorage<boolean | null>('isLoggedIn', false);
-  
-  
-/*   useEffect(() => {
 
-    const checkUserData = async () => { 
-      if (loadingI) {
-        console.log('Loading user data...');
-        return;
-      }
-      // Simulate fetching user data from an API or storage
-      await isLoggedIn ? saveU(userName) : saveU('Guest');
-      console.log('User data loaded:', userName);
-      if (isLoggedIn) setName(userName || 'Guest');
-      setLoadingI(false); 
-      
-      
-    }
+
+
+  
+  
+  
+  useEffect(() => {
     console.log('TabThreeScreen mounted');
     console.log('Current user:', userName, isLoggedIn);
+
+    
     
     return () => {
       console.log('TabThreeScreen unmounted');
     };
 
-  }, []); */
+  }, []); 
 
-  if (loadingI) {
+  if (loading) {
     return (
       <SafeAreaView style={styles.container}>
         <ActivityIndicator size="large" color="#f47521" />
       </SafeAreaView>
     );
   } 
-  
+
+
+  const callApi = async () => {
+    try {
+      const response = await onlyGet('api/test'); // Adjust the API call as necessary
+      console.log('API Response:', response.data);
+     // Alert.alert('API Call Successful', 'Check console for response.');
+    } catch (error: any) {
+    if (error.response) {
+      console.log("❌ Status:", error.response.status);
+      console.log("❌ Data:", error.response.data);
+        // Aquí aparecerá { mensaje: "Token faltante" }
+    } else if (error.request) {
+      console.log("❌ No hubo respuesta del servidor:", error.request);
+    } else {
+      console.log("❌ Error al configurar la petición:", error.message);
+    }
+  }
+  };
+
+ /*    const callApi =() => {
+      const { data, error, loading: loadApi, refetch } = useApi({
+    endpoint: "/api/test",
+    method: "get",
+    autoFetch: true,
+      });
+    
+  }; */
   
   const handleSaveChanges = () => {
     // In a real app, you would send this data to your backend API
@@ -93,10 +114,18 @@ export default function TabThreeScreen() {
   }
 
   const logOut = () => {
+    
     saveU(null);
+    
     saveLoginStatus(false);
-    remove();
-    router.push('../screen/auth/auth'); // Navigate to the login screen
+   
+    //remove();
+    
+    removeLog();
+    
+    removeU();
+    
+    router.replace('/auth/auth');  // Navigate to the login screen
   };
 
   
@@ -108,7 +137,7 @@ export default function TabThreeScreen() {
         {/* --- Profile Header --- */}
         <View style={styles.profileHeader}>
           <Image source={{ uri: CURRENT_USER_DATA.avatar }} style={styles.avatar} />
-          <Text style={[styles.userName, { color: colorScheme === 'dark' ? '#ffffff' : '#000000' }]}>{name}</Text>
+          <Text style={[styles.userName, { color: colorScheme === 'dark' ? '#ffffff' : '#000000' }]}>{userName ?? name}</Text>
           <Text style={[styles.userEmail, { color: colorScheme === 'dark' ? '#ffffff' : '#000000' }]}>{email}</Text>
         </View>
 
@@ -194,6 +223,10 @@ export default function TabThreeScreen() {
         <TouchableOpacity style={styles.saveButton} onPress={() => removeLog()}>
           <Text style={styles.saveButtonText}>Eliminar Login</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.saveButton} onPress={() => callApi()}>
+          <Text style={styles.saveButtonText}>CallApi</Text>
+        </TouchableOpacity>
+
           {/* <Button title="Eliminar token" onPress={remove} /> */}
         </View>
 

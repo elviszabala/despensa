@@ -5,25 +5,37 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { useAuth } from '../../hooks/useAuth';
 import { useStorage } from '@/utils/useStorage';
 import { useRouter } from 'expo-router';
+import { ActivityIndicator } from 'react-native';
 
 //import { COLORS } from '../../constants/colors';
 
 const LoginScreen = () => {
-    const router = useRouter();
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, userName, isLoggedIn} = useAuth();
+  const { login, userName, isLoggedIn, loading} = useAuth();
   const colorScheme = useColorScheme();
   const { value: isLogged, save: saveLoginStatus } = useStorage<boolean>('isLoggedIn', false);
+   const { value: token} = useStorage<string | null>('authToken', null);
+  const { save: saveU } = useStorage<string | null>('user', null);
 
   useEffect(() => {
     console.log('LoginScreen mounted');
-    //console.log('Current user:', userName, isLoggedIn);
+    
+    console.log('Current user:', userName, ' Current Login: ', isLogged);
     
     return () => {
       console.log('LoginScreen unmounted');
     };
   }, []);
+
+  if (loading){
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="#f47521" />
+      </SafeAreaView>
+    );
+  }
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -41,9 +53,13 @@ const LoginScreen = () => {
     };
 
     const handleContinueWithoutLogin = () => {
+      console.log('Continuar sin registrarse');
         saveLoginStatus(true);
+        saveU('Guest'); // Guardar un nombre de usuario genérico
+        
         //Alert.alert('Continuar sin registrarse', 'Has iniciado sesión como invitado.');
-        router.push('../items/add')
+        router.replace('/(tabs)'); // Redirigir a la pantalla principal
+        
     }
 
   return (
@@ -86,6 +102,17 @@ const LoginScreen = () => {
 
     <View style={{ marginTop: 20 }}>
       <Button title="Continuar sin registrarse" onPress={() => handleContinueWithoutLogin()} />
+    </View>
+
+    <View style={{ marginTop: 20 }}>
+      <Text style={{ color: colorScheme === 'dark' ? '#ffffff' : '#000000', textAlign: 'center' }}>
+      
+      {token}
+      </Text>
+      <Text style={{ color: colorScheme === 'dark' ? '#ffffff' : '#000000', textAlign: 'center' }}>
+      
+      {isLogged}
+      </Text>
     </View>
     </SafeAreaView>
   );

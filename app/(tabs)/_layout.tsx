@@ -60,6 +60,7 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color }) => <TabBarIcon name="user-circle" color={color} />,
+           // Unmount the screen when not focused
         }}
       />
     </Tabs>

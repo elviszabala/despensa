@@ -16,11 +16,11 @@ export function useAuth() {
 
   useEffect(() => {
     
-    console.log('useAuth mounted', userName, isLoggedIn);
+    console.log('useAuth mounted, data: ', userName, isLoggedIn);
     const checkLoginStatus = async () => {
       const storedUser = await AsyncStorage.getItem('user');
       const storedLoginStatus = await AsyncStorage.getItem('isLoggedIn');
-      //console.log('Checking login status:', storedUser, storedLoginStatus);
+      console.log('Checking login status inside useAuth:', storedUser, storedLoginStatus);
 
       if (storedUser) {
         saveUser(storedUser);

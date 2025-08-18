@@ -55,11 +55,13 @@ export function useStorage<T = string | null>(key: string, defaultValue: T) {
         await AsyncStorage.removeItem(key);
       }
       setValue(defaultValue);
-      //console.log('Default value set:', defaultValue);
+      console.log('Default value set:', defaultValue);
     } catch (error) {
       console.error(`Error removing ${key}:`, error);
     }
   };
+
+
 
   return { value, save, remove, loading };
 }
