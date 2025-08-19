@@ -6,6 +6,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { useStorage } from '@/utils/useStorage';
 import { useRouter } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
+import  apiClient  from '../../api/apiClient';
+
 
 //import { COLORS } from '../../constants/colors';
 
@@ -13,29 +15,22 @@ const LoginScreen = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, userName, isLoggedIn, loading} = useAuth();
+  //const { login, userName, isLoggedIn, loading} = useAuth();
   const colorScheme = useColorScheme();
-  const { value: isLogged, save: saveLoginStatus } = useStorage<boolean>('isLoggedIn', false);
-   const { value: token} = useStorage<string | null>('authToken', null);
-  const { save: saveU } = useStorage<string | null>('user', null);
+//  const { value: isLogged, save: saveLoginStatus } = useStorage<boolean>('isLoggedIn', false);
+//   const { value: token} = useStorage<string | null>('authToken', null);
+//  const { save: saveU } = useStorage<string | null>('user', null);
 
   useEffect(() => {
     console.log('LoginScreen mounted');
     
-    console.log('Current user:', userName, ' Current Login: ', isLogged);
+   // console.log('Current user:', userName, ' Current Login: ', isLogged);
     
     return () => {
       console.log('LoginScreen unmounted');
     };
   }, []);
 
-  if (loading){
-    return (
-      <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color="#f47521" />
-      </SafeAreaView>
-    );
-  }
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -46,6 +41,42 @@ const LoginScreen = () => {
     if (!success) {
       Alert.alert('Error de Login', 'Las credenciales son incorrectas.');
     } */
+
+    
+
+      try {
+
+        const response = await apiClient.post('/api/auth/login', {email, password});
+        //console.log('API Response:', response.data);
+
+        // Aquí puedes manejar la respuesta de la API
+        if (response.status == 200) {
+          Alert.alert('Login exitoso', 'Has iniciado sesión correctamente.');
+          const token = response.data.token;
+          console.log('Token recibido:', token);
+         
+        } else {
+          Alert.alert('Error de Login', response.data.message || 'Las credenciales son incorrectas.');
+        }
+
+      }catch (error: any) {
+        if (error.response) {
+      //console.log("❌ Status:", error.response.status);
+      console.log("❌ Data:", error.response.data);
+      if (error.response.status === 401) {
+        Alert.alert('Error de Login', 'Usuario y contrasenas incorrectas');
+      }
+        // Aquí aparecerá { mensaje: "Token faltante" }
+    } else if (error.request) {
+      console.log(" No hubo respuesta del servidor:", error.request);
+    } else {
+      console.log(" Error al configurar la petición:", error.message);
+    }
+
+
+      }
+
+
   };
 
     const handleRegister = () => {
@@ -54,8 +85,8 @@ const LoginScreen = () => {
 
     const handleContinueWithoutLogin = () => {
       console.log('Continuar sin registrarse');
-        saveLoginStatus(true);
-        saveU('Guest'); // Guardar un nombre de usuario genérico
+        //saveLoginStatus(true);
+       // saveU('Guest'); // Guardar un nombre de usuario genérico
         
         //Alert.alert('Continuar sin registrarse', 'Has iniciado sesión como invitado.');
         router.replace('/(tabs)'); // Redirigir a la pantalla principal
@@ -107,11 +138,11 @@ const LoginScreen = () => {
     <View style={{ marginTop: 20 }}>
       <Text style={{ color: colorScheme === 'dark' ? '#ffffff' : '#000000', textAlign: 'center' }}>
       
-      {token}
+    Esto es un texto
       </Text>
       <Text style={{ color: colorScheme === 'dark' ? '#ffffff' : '#000000', textAlign: 'center' }}>
       
-      {isLogged}
+      Otro texto
       </Text>
     </View>
     </SafeAreaView>

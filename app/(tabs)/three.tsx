@@ -10,6 +10,7 @@ import { router, useRouter } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
 import  {onlyGet}  from '../../api/apiCalls'; // Adjust the import path as necessary
 import { useApi } from "../../api/useApi";
+import { useCounterStore } from '@/utils/store';
 
 
 
@@ -38,6 +39,8 @@ export default function TabThreeScreen() {
   const { value: token, save, remove, loading } = useStorage<string | null>('authToken', null);
   const { value: userName, save: saveU, remove: removeU } = useStorage<string | null>('user', null);
   const { value: isLoggedIn, save: saveLoginStatus, remove: removeLog } = useStorage<boolean | null>('isLoggedIn', false);
+  const { count, increment, decrement } = useCounterStore();
+  //const increment = useCounterStore((state) => state.increment);
 
 
 
@@ -46,7 +49,8 @@ export default function TabThreeScreen() {
   
   useEffect(() => {
     console.log('TabThreeScreen mounted');
-    console.log('Current user:', userName, isLoggedIn);
+    //console.log('Current user:', userName, isLoggedIn);
+    console.log('Current count from tab three:', count);
 
     
     
@@ -127,6 +131,11 @@ export default function TabThreeScreen() {
     
     router.replace('/auth/auth');  // Navigate to the login screen
   };
+
+  const store = () => {
+    increment();
+    console.log('Incremented count:', count);
+  }
 
   
 
@@ -225,6 +234,9 @@ export default function TabThreeScreen() {
         </TouchableOpacity>
         <TouchableOpacity style={styles.saveButton} onPress={() => callApi()}>
           <Text style={styles.saveButtonText}>CallApi</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.saveButton} onPress={() => store()}>
+          <Text style={styles.saveButtonText}>Incremente</Text>
         </TouchableOpacity>
 
           {/* <Button title="Eliminar token" onPress={remove} /> */}

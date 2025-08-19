@@ -34,7 +34,7 @@ export default function TabTwoScreen() {
         <TouchableOpacity style={styles.button} onPress={() => router.push('/items/add')}>
           <Text style={styles.buttonText}>Add Item</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/items/add')}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/auth/auth')}>
           <Text style={styles.buttonText}>Add Item</Text>
         </TouchableOpacity>
       </View>

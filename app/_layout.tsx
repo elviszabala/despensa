@@ -13,6 +13,7 @@ import LoginScreen from './auth/auth';
 import { useStorage } from '@/utils/useStorage';
 import { ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useCounterStore } from '@/utils/store';
 
 
 
@@ -34,6 +35,9 @@ export default function RootLayout() {
   const router = useRouter();
   const { loading, userName,  isLoggedIn } = useAuth();
   const [loadingI, setLoadingI] = useState(true);
+  console.log('Starting');
+  const count = useCounterStore((state) => state.count);
+  console.log('Current count from Layout:', count);
 
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -58,7 +62,7 @@ export default function RootLayout() {
  
   //console.log('Cargo', user, isLoggedIn);
 
-  if (loading) {
+ /*  if (loading) {
     console.log('Loading user data...', userName, isLoggedIn);
 
      return (
@@ -71,7 +75,7 @@ export default function RootLayout() {
   if (!isLoggedIn) {
     console.log('User is not logged in, redirecting to login screen');
     return <LoginScreen />;
-  }
+  } */
 
   return <RootLayoutNav />;
 

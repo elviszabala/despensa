@@ -20,14 +20,14 @@ export function useAuth() {
     const checkLoginStatus = async () => {
       const storedUser = await AsyncStorage.getItem('user');
       const storedLoginStatus = await AsyncStorage.getItem('isLoggedIn');
-      console.log('Checking login status inside useAuth:', storedUser, storedLoginStatus);
+      //console.log('Checking login status inside useAuth:', storedUser, storedLoginStatus);
 
       if (storedUser) {
         saveUser(storedUser);
-        console.log('User found:', storedUser);
+        //console.log('User found:', storedUser);
       }
       if (storedLoginStatus) {
-        console.log('Login status found:', storedLoginStatus);
+        //console.log('Login status found:', storedLoginStatus);
         saveLoginStatus(JSON.parse(storedLoginStatus));
       }
 
